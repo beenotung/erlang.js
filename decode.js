@@ -19,8 +19,9 @@ module.exports.Decoder = Decoder
 var debug = require('debug')('erlang:decode')
 
 var lib = require('./lib.js')
-var MODE = lib.modes
+var MODE = require('./modes.js').modes
 var object = require('./object.js')
+var util = require('util')
 
 function binary_to_term(term) {
   if (!Buffer.isBuffer(term))
@@ -40,7 +41,7 @@ function binary_to_term(term) {
 
 function Decoder (bin, mode) {
   this.bin = bin || new Buffer([])
-  this.mode = mode || lib.default_mode
+  this.mode = mode || MODE.default_mode
 }
 
 Decoder.prototype.decode = function() {
@@ -148,7 +149,7 @@ Decoder.prototype.SMALL_TUPLE = function() {
   this.bin = body.bin
 
   debug('Small tuple %j', this.bin)
-  if (term[0] === object.map_optlist_tag) {
+  if(object.is_atom_of(object.map_optlist_tag, term[0])){
     return object.optlist_to_object(term);
   }
   return {t:term}

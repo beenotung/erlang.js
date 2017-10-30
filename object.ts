@@ -1,5 +1,7 @@
-export const map_optlist_tag = Symbol.for("map_optlist");
-export const map_list_tag = Symbol.for("map_list");
+export const map_optlist_tag_string = "map_optlist";
+export const map_optlist_tag = Symbol.for(map_optlist_tag_string);
+export const map_list_tag_string = "map_list";
+export const map_list_tag = Symbol.for(map_list_tag_string);
 import * as util from "util";
 import {modes as MODE} from "./modes";
 
@@ -138,7 +140,8 @@ export function to_atom(x, mode = MODE.default_mode) {
   }
 }
 
-const b = Symbol.for("b");
+const binary = Symbol.for("b");
+const tuple = Symbol.for("t");
 
 export function to_binary(x, mode = MODE.default_mode) {
   switch (mode) {
@@ -146,20 +149,32 @@ export function to_binary(x, mode = MODE.default_mode) {
       return {"b": x};
     case MODE.ATOM_SYMBOL:
       const res = {};
-      res[b] = x;
+      res[binary] = x;
       return res;
     default:
-      throw new Error("unsupported mode");
+      throw new Error("unsupported mode: " + mode);
   }
 }
 
-export function to_tuple(x, mode = MODE.default_mode) {
+export function to_tuple(vs, mode = MODE.default_mode) {
   switch (mode) {
     case MODE.ATOM_OBJECT:
-      return {"a": x};
+      return {"t": vs};
     case MODE.ATOM_SYMBOL:
-      return Symbol.for(x);
+      const res = {};
+      res[tuple] = vs;
+      return res;
     default:
-      throw new Error("unsupported mode");
+      throw new Error("unsupported mode: " + mode);
   }
+}
+
+export function getAtomValue(x) {
+  return typeof x === "symbol"
+    ? Symbol.keyFor(x)
+    : x.a;
+}
+
+export function is_atom_of(name, x) {
+  return getAtomValue(name) == getAtomValue(x);
 }

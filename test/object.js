@@ -26,7 +26,7 @@ test('Simple object codec', function(t) {
   t.equal(bin[1], lib.tags.SMALL_TUPLE, 'Object is encoded as a SMALL_TUPLE')
 
   var dec = api.binary_to_term(bin)
-  t.equal(JSON.stringify(o), JSON.stringify(dec), 'Decoded is same as original data')
+  t.equal(JSON.stringify(dec), JSON.stringify(o), 'Decoded is same as original data')
 
   t.end()
 })
@@ -40,7 +40,7 @@ function test_deep_object(format){
    t.equal(bin[1], lib.tags.SMALL_TUPLE, 'Object is encoded as a SMALL_TUPLE')
 
    var dec = api.binary_to_term(bin, format)
-   t.equal(JSON.stringify(o), JSON.stringify(dec), 'Decoded is same as original data')
+   t.equal(JSON.stringify(dec), JSON.stringify(o), 'Decoded is same as original data')
 
    t.end()
  })

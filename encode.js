@@ -106,6 +106,7 @@ Encoder.prototype.object = function(x) {
   throw new Error("Unknown tag " + tag.toString() + " for value: " + util.inspect(val))
 }
 
+Encoder.prototype.symbol =
 Encoder.prototype.atom = function(x) {
   var v = typeof x === "symbol" ? Symbol.keyFor(x) : x;
   var bytes = new Buffer(v, 'utf8')
