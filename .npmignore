@@ -5,3 +5,4 @@ yarn.lock
 
 object.ts
 async.ts
+modes.ts

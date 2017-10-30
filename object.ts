@@ -1,6 +1,7 @@
-export const map_optlist_tag = "map_optlist";
-export const map_list_tag = "map_list";
+export const map_optlist_tag = Symbol.for("map_optlist");
+export const map_list_tag = Symbol.for("map_list");
 import * as util from "util";
+import {modes as MODE} from "./modes";
 
 export type format = "tagged_optlist" | "optlist" | "list" ;
 const default_format: format = "tagged_optlist";
@@ -110,5 +111,55 @@ export function optlist_to_object(term: [any, any], format: format = default_for
     }
     default:
       throw new TypeError("unsupported format: " + util.inspect(format));
+  }
+}
+
+export function to_atom(x, mode = MODE.default_mode) {
+  const type = typeof x;
+  switch (mode) {
+    case MODE.ATOM_OBJECT:
+      if (type === "symbol") {
+        return {"a": Symbol.for(x)};
+      } else if (type === "string") {
+        return {"a": x};
+      } else {
+        throw TypeError("unsupported type: " + type);
+      }
+    case MODE.ATOM_SYMBOL:
+      if (type === "string") {
+        return Symbol.for(x);
+      } else if (type === "symbol") {
+        return x;
+      } else {
+        throw new TypeError("unsupported type: " + type);
+      }
+    default:
+      throw new Error("unsupported mode: " + mode);
+  }
+}
+
+const b = Symbol.for("b");
+
+export function to_binary(x, mode = MODE.default_mode) {
+  switch (mode) {
+    case MODE.ATOM_OBJECT:
+      return {"b": x};
+    case MODE.ATOM_SYMBOL:
+      const res = {};
+      res[b] = x;
+      return res;
+    default:
+      throw new Error("unsupported mode");
+  }
+}
+
+export function to_tuple(x, mode = MODE.default_mode) {
+  switch (mode) {
+    case MODE.ATOM_OBJECT:
+      return {"a": x};
+    case MODE.ATOM_SYMBOL:
+      return Symbol.for(x);
+    default:
+      throw new Error("unsupported mode");
   }
 }

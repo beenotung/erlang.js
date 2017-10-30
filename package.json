@@ -18,9 +18,10 @@
   "types": "./api.d.ts",
   "scripts": {
     "lint": "tslint -p .",
-    "build": "tsc && run-p buildType:*",
-    "buildType:async": "tsc -d async.ts || true",
-    "buildType:object": "tsc -d object.ts || true",
+    "build": "tsc --target es5 && run-p buildType:*",
+    "buildType:async": "tsc -d async.ts --target es6 || true",
+    "buildType:object": "tsc -d object.ts --target es6 || true",
+    "buildType:modes": "tsc -d modes.ts --target es6 || true",
     "pretest": "npm run build",
     "prepublishOnly": "npm test",
     "test": "npm run lint && tap test/"

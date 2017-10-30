@@ -10,7 +10,6 @@
       "dom",
       "es2015"
     ],
-    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true
@@ -18,7 +17,8 @@
   "include": [
     "api.d.ts",
     "object.ts",
-    "async.ts"
+    "async.ts",
+    "modes.ts"
   ],
   "exclude": [
     "node_modules"

@@ -10,3 +10,7 @@ object.js.map
 async.d.ts
 async.js
 async.js.map
+
+modes.d.ts
+modes.js
+modes.js.map

@@ -18,10 +18,12 @@ module.exports.optlist_to_binary = optlist_to_binary
 
 var util = require('util')
 var lib = require('./lib.js')
+var MODE = require('./modes.js')
 var object = require('./object.js')
 var typeOf = lib.typeOf
 
-function Encoder () {
+function Encoder (mode) {
+  this.mode = mode || MODE.default_mode
 }
 
 Encoder.prototype.encode = function(term) {
@@ -105,7 +107,8 @@ Encoder.prototype.object = function(x) {
 }
 
 Encoder.prototype.atom = function(x) {
-  var bytes = new Buffer(x, 'utf8')
+  var v = typeof x === "symbol" ? Symbol.keyFor(x) : x;
+  var bytes = new Buffer(v, 'utf8')
   var result = [ lib.tags.ATOM
                , lib.uint16(bytes.length) ]
 
@@ -170,7 +173,8 @@ function term_to_binary(term) {
 //    a string like #1, it is converted, otherwise left alone -> {two, tuple}
 //
 // Booleans are converted to tuples too.
-function optlist_to_term (opts) {
+function optlist_to_term (opts, mode) {
+  mode = mode || lib.default_mode;
   var args = Array.prototype.slice.apply(arguments)
   if(args.length > 1)
     return optlist_to_term(args)
@@ -187,11 +191,30 @@ function optlist_to_term (opts) {
       return el
 
     if(type === 'string') {
-      if(looks_like_atom.test(el))
-        return {'a': el}
+      if(looks_like_atom.test(el)){
+        switch (mode){
+          case MODE.ATOM_OBJECT:
+            return {'a': el};
+          case MODE.ATOM_SYMBOL:
+            return Symbol.for(el);
+          default:
+            throw new Error("unsupported mode: " + mode);
+        }
+      }
       else if(opts && opts.identity)
         return el
       throw new Error("Invalid atom: " + el)
+    }
+
+    if(type === 'symbol') {
+      switch (mode){
+        case MODE.ATOM_OBJECT:
+          return {'a':Symbol.keyFor(el)};
+        case MODE.ATOM_SYMBOL:
+          return el;
+        default:
+          throw new Error("unsupported mode: " + mode);
+      }
     }
 
     if(opts && opts.identity)
@@ -207,7 +230,7 @@ function optlist_to_term (opts) {
 
   function element_to_opt(el) {
     var type = typeOf(el)
-    if(type === 'string' || type === 'boolean') {
+    if(type === 'string' || type === 'boolean' || type === 'symbol') {
       return to_atom(el)
     } else if(type === 'array' && el.length === 2) {
       return to_2_tuple(el)

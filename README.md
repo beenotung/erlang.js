@@ -92,11 +92,21 @@ term_to_binary([ { atom: 'set' }
 */
 ```
 
+## TODO
+1. Use Symbol for the Atom
+
+    `Symbol.for('atom')` is better than `{a:'atom'}`
+
+2. handle Object.keys(o) and  Object.getOwnPropertySymbols(o) correctly
+
+3. update test config to support ES6 (for Symbol to work)
+
 ## License
 
 Apache 2.0
 
 See the [Apache 2.0 license](named/blob/master/LICENSE).
 
-[tap]: https://github.com/isaacs/node-tap
-[def]: https://github.com/iriscouch/defaultable
+tap: https://github.com/isaacs/node-tap
+
+def: https://github.com/iriscouch/defaultable

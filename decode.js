@@ -19,6 +19,7 @@ module.exports.Decoder = Decoder
 var debug = require('debug')('erlang:decode')
 
 var lib = require('./lib.js')
+var MODE = lib.modes
 var object = require('./object.js')
 
 function binary_to_term(term) {
@@ -37,8 +38,9 @@ function binary_to_term(term) {
   return decoded
 }
 
-function Decoder (bin) {
+function Decoder (bin, mode) {
   this.bin = bin || new Buffer([])
+  this.mode = mode || lib.default_mode
 }
 
 Decoder.prototype.decode = function() {
@@ -97,8 +99,12 @@ Decoder.prototype.ATOM = function() {
     term = null
   else if (term == 'undefined')
     term = undefined
-  else
+  else if (this.mode == MODE.ATOM_OBJECT)
     term = {a:term}
+  else if (this.mode == MODE.ATOM_SYMBOL)
+    term = Symbol.for(term)
+  else
+    throw new Error("unknown mode: "+this.mode)
 
   this.bin = this.bin.slice(end)
 

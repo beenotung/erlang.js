@@ -13,11 +13,17 @@
 var encode = require('./encode.js')
 var decode = require('./decode.js')
 var iolist = require('./iolist.js')
-var async = require('./async.js')
+var async  = require('./async.js')
+var lib    = require('./lib.js')
+var MODE   = require('./modes.js')
 
 function blob_to_term(blob){
   return async.blob_to_buffer(blob)
     .then(decode)
+}
+
+function set_default_mode(mode) {
+  MODE.default_mode = mode
 }
 
 module.exports =
@@ -32,4 +38,7 @@ module.exports =
   , iolist_size      : iolist.size
 
   , blob_to_term     : blob_to_term
+
+  , modes            : lib.modes
+  , set_default_mode : set_default_mode
   }

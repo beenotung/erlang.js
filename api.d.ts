@@ -1,7 +1,17 @@
 type Buffer = Uint8Array | ArrayBuffer;
 type ByteArray = any[];
 
+export interface Modes {
+  ATOM_OBJECT: number
+  ATOM_SYMBOL: number
+}
+
+export let modes: Modes;
+type Mode = Modes[keyof Modes];
+
 declare class Encoder {
+  constructor(mode?: Mode);
+
   encode(term): ByteArray;
 
   undefined(x): ByteArray;
@@ -32,13 +42,13 @@ interface Encode {
 
   Encoder: Encoder;
 
-  optlist_to_term(opts: any[]): any[];
+  optlist_to_term(opts: any[], mode?: Mode): any[];
 
-  optlist_to_binary(opts: any[]): Buffer;
+  optlist_to_binary(opts: any[], mode?: Mode): Buffer;
 }
 
 declare class Decoder {
-  constructor(bin: ArrayBuffer)
+  constructor(bin?: ArrayBuffer, mode?: Mode);
 
   decode(): any;
 
@@ -48,7 +58,7 @@ declare class Decoder {
 
   STRING(): any;
 
-  ATOM(): any;
+  ATOM(): { a: any } | Symbol;
 
   LIST(): any;
 
@@ -77,9 +87,9 @@ declare let iolist: IOList;
 
 export function term_to_binary(term: any): Buffer;
 
-export function optlist_to_term(opts: any[]): any[];
+export function optlist_to_term(opts: any[], mode?: Mode): any[];
 
-export function optlist_to_binary(opts: any[]): Buffer;
+export function optlist_to_binary(opts: any[], mode?: Mode): Buffer;
 
 
 export function binary_to_term(term: Buffer): any;
@@ -93,3 +103,6 @@ export function iolist_size(list): number;
 
 
 export function blob_to_term(blob: Blob): Promise<any>;
+
+
+export function set_default_mode(mode: Mode);
