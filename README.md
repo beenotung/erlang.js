@@ -97,9 +97,21 @@ term_to_binary([ { atom: 'set' }
 
     `Symbol.for('atom')` is better than `{a:'atom'}`
 
-2. handle Object.keys(o) and  Object.getOwnPropertySymbols(o) correctly
+    i. Also apply to the atom of tuple i.e. `{(Symbol(tuple)): [Symbol(record), 1, 2]}`
 
-3. update test config to support ES6 (for Symbol to work)
+    ii. Add workaround to distinct the 'marking atom "tuple"' and the user's 'data atom "tuple"'
+
+2. Handle Object.keys(o) and Object.getOwnPropertySymbols(o) correctly
+
+3. Another approach is to use Symbol for marking, and only support string key in user data (typical javascript object),
+i.e. :
+    ```
+    This will be user data: `{a:1}` and `{atom:2}` as two objects;
+
+    But this will be marking data: `{Symbol(a): 1}` and `{Symbol(atom): 2}` as two atoms;
+    ```
+This approach can avoid ambiguous between user atom and library marking,
+but this will make the atom not handy to use
 
 ## License
 

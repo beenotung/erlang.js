@@ -175,6 +175,11 @@ export function getAtomValue(x) {
     : x.a;
 }
 
-export function is_atom_of(name, x) {
-  return getAtomValue(name) == getAtomValue(x);
+export function is_atom_of(target, compare) {
+  const t1 = typeof target;
+  const t2 = typeof compare;
+  if (t1 == t2) {
+    return target == compare;
+  }
+  return getAtomValue(target) == getAtomValue(compare);
 }
